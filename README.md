@@ -42,3 +42,8 @@ Projekt nastaja pri predmetu Razvoj informacijskih rešitev in storitev (RIRS) n
 ## Razvojni proces
 
 Repozitorij uporablja **GitHub Flow**: veja `main` je zaščitena, vse spremembe se razvijajo v ločenih vejah in združujejo prek pull requestov.
+
+
+## Avtorica
+
+Kristina Andjelkovic
