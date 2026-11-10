@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use('/api', require('./routes/avtentikacija'));
 
 app.get('/api', (req, res) => {
   res.json({ sporocilo: 'Volunteero API deluje' });
