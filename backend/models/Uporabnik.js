@@ -12,6 +12,7 @@ const uporabnikShema = new mongoose.Schema({
   },
   vpisnaStevilka: { type: String },
   potrjen: { type: Boolean, default: false },
+  aktiven: { type: Boolean, default: true },
   organizacijaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organizacija' }
 });
 

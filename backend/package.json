@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "description": "REST API za aplikacijo Volunteero",
     "main": "server.js",
-    "scripts": {
-        "start": "node server.js",
-        "dev": "nodemon server.js"
-    },
+      "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "skrbnik": "node scripts/ustvariSkrbnika.js"
+  },
     "keywords": [],
     "author": "Kristina Andjelkovic",
     "license": "ISC",
