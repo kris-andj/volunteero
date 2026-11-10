@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(preveriZeton, zahtevajVlogo('SKRBNIK'));
 
 router.get('/uporabniki', async (req, res) => {
-  const studenti = await Uporabnik.find({ vloga: 'STUDENT', potrjen: false, aktiven: true }).select('-gesloHash');
+  const studenti = await Uporabnik.find({ vloga: 'STUDENT', potrjen: false, aktiven: { $ne: false } }).select('-gesloHash');
   res.json(studenti);
 });
 
@@ -33,7 +33,7 @@ router.patch('/uporabniki/:id/zavrni', async (req, res) => {
 });
 
 router.get('/organizacije', async (req, res) => {
-  const organizacije = await Organizacija.find({ odobrena: false, aktivna: true });
+  const organizacije = await Organizacija.find({ odobrena: false, aktivna: { $ne: false } });
   res.json(organizacije);
 });
 
