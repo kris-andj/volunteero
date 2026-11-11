@@ -7,11 +7,36 @@ const { preveriZeton, zahtevajVlogo } = require('../middleware/avtentikacija');
 
 const router = express.Router();
 
+async function dodajStevilke(akcije) {
+  const skupine = await Prijava.aggregate([
+    { $match: { akcijaId: { $in: akcije.map((a) => a._id) } } },
+    { $group: { _id: { akcija: '$akcijaId', status: '$status' }, stevilo: { $sum: 1 } } }
+  ]);
+  const prestej = (akcijaId, statusi) =>
+    skupine
+      .filter((s) => String(s._id.akcija) === String(akcijaId) && statusi.includes(s._id.status))
+      .reduce((vsota, s) => vsota + s.stevilo, 0);
+
+  for (const akcija of akcije) {
+    akcija.zasedena = prestej(akcija._id, ['POTRJENA', 'KONFLIKT']);
+    akcija.prostaMesta = Math.max(akcija.steviloMest - akcija.zasedena, 0);
+    akcija.novihPrijav = prestej(akcija._id, ['ODDANA']);
+  }
+  return akcije;
+}
+
 router.get('/', async (req, res) => {
   const akcije = await Akcija.find({ status: 'OBJAVLJENA', zacetek: { $gt: new Date() } })
     .populate('organizacijaId', 'naziv')
-    .sort({ zacetek: 1 });
-  res.json(akcije);
+    .sort({ zacetek: 1 })
+    .lean();
+  res.json(await dodajStevilke(akcije));
+});
+
+router.get('/moje', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) => {
+  const organizator = await Uporabnik.findById(req.uporabnik.id);
+  const akcije = await Akcija.find({ organizacijaId: organizator.organizacijaId }).sort({ zacetek: 1 }).lean();
+  res.json(await dodajStevilke(akcije));
 });
 
 router.post('/', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) => {
