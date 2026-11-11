@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import { Compass, User, LayoutGrid, ShieldCheck, LogOut, HandHeart } from 'lucide-react';
 import Vpis from './pages/Vpis';
 import Akcije from './pages/Akcije';
 import Profil from './pages/Profil';
@@ -36,19 +37,26 @@ export default function App() {
   return (
     <BrowserRouter>
       <header className="glava">
-        <span className="logo">VOLUNTEERO</span>
+        <div className="logo">
+          <span className="logo-znak"><HandHeart size={16} /></span>
+          Volunteero
+        </div>
         {uporabnik && (
           <nav>
             {uporabnik.vloga === 'STUDENT' && (
               <>
-                <Link to="/akcije">Akcije</Link>
-                <Link to="/profil">Profil</Link>
+                <NavLink to="/akcije"><Compass size={16} /><span className="besedilo-povezave">Akcije</span></NavLink>
+                <NavLink to="/profil"><User size={16} /><span className="besedilo-povezave">Moj profil</span></NavLink>
               </>
             )}
-            {uporabnik.vloga === 'ORGANIZATOR' && <Link to="/organizator">Moje akcije</Link>}
-            {uporabnik.vloga === 'SKRBNIK' && <Link to="/skrbnik">Potrditve</Link>}
-            <span className="podatki">{uporabnik.ime}</span>
-            <button className="gumb-mali" onClick={odjava}>Odjava</button>
+            {uporabnik.vloga === 'ORGANIZATOR' && (
+              <NavLink to="/organizator"><LayoutGrid size={16} /><span className="besedilo-povezave">Moje akcije</span></NavLink>
+            )}
+            {uporabnik.vloga === 'SKRBNIK' && (
+              <NavLink to="/skrbnik"><ShieldCheck size={16} /><span className="besedilo-povezave">Potrditve</span></NavLink>
+            )}
+            <span className="uporabnik">{uporabnik.ime}</span>
+            <button className="povezava" onClick={odjava}><LogOut size={16} /><span className="besedilo-povezave">Odjava</span></button>
           </nav>
         )}
       </header>
