@@ -2,6 +2,7 @@ const express = require('express');
 const Akcija = require('../models/Akcija');
 const Uporabnik = require('../models/Uporabnik');
 const Organizacija = require('../models/Organizacija');
+const Prijava = require('../models/Prijava');
 const { preveriZeton, zahtevajVlogo } = require('../middleware/avtentikacija');
 
 const router = express.Router();
@@ -54,6 +55,32 @@ router.post('/', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) =>
   });
 
   res.status(201).json(akcija);
+});
+
+router.post('/:id/prijave', preveriZeton, zahtevajVlogo('STUDENT'), async (req, res) => {
+  const student = await Uporabnik.findById(req.uporabnik.id);
+  if (!student || !student.potrjen) {
+    return res.status(403).json({ napaka: 'Študent še ni potrjen' });
+  }
+
+  const akcija = await Akcija.findById(req.params.id);
+  if (!akcija || akcija.status !== 'OBJAVLJENA' || akcija.zacetek <= new Date()) {
+    return res.status(400).json({ napaka: 'Prijava na to akcijo ni mogoča' });
+  }
+
+  const obstaja = await Prijava.findOne({ studentId: student._id, akcijaId: akcija._id });
+  if (obstaja) {
+    return res.status(409).json({ napaka: 'Na to akcijo ste že prijavljeni' });
+  }
+
+  const potrjene = await Prijava.find({ studentId: student._id, status: 'POTRJENA' }).populate('akcijaId');
+  const prekrivanje = potrjene.find((p) => p.akcijaId && akcija.sePrekriva(p.akcijaId));
+  if (prekrivanje) {
+    return res.status(400).json({ napaka: `Akcija se prekriva s potrjeno akcijo »${prekrivanje.akcijaId.naziv}«` });
+  }
+
+  const prijava = await Prijava.create({ studentId: student._id, akcijaId: akcija._id });
+  res.status(201).json(prijava);
 });
 
 module.exports = router;
