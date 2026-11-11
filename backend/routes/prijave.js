@@ -3,6 +3,7 @@ const Prijava = require('../models/Prijava');
 const Akcija = require('../models/Akcija');
 const Uporabnik = require('../models/Uporabnik');
 const { preveriZeton, zahtevajVlogo } = require('../middleware/avtentikacija');
+const { napredujCakalnoVrsto } = require('../services/cakalnaVrsta');
 
 const router = express.Router();
 
@@ -89,17 +90,66 @@ router.patch('/:id/resi-konflikt', preveriZeton, zahtevajVlogo('STUDENT'), async
 
   if (req.body.obdrzi === true) {
     const druge = await poisciPrekrivanja(prijava.studentId, akcija);
+    prijava.status = 'POTRJENA';
+    await prijava.save();
     for (const druga of druge) {
       druga.status = 'PREKLICANA';
       await druga.save();
+      await napredujCakalnoVrsto(druga.akcijaId._id);
     }
-    prijava.status = 'POTRJENA';
   } else {
     prijava.status = 'PREKLICANA';
+    await prijava.save();
+    await napredujCakalnoVrsto(akcija._id);
   }
 
-  await prijava.save();
   res.json({ sporocilo: 'Konflikt razrešen', status: prijava.status });
+});
+
+router.patch('/:id/preklici', preveriZeton, zahtevajVlogo('STUDENT'), async (req, res) => {
+  const prijava = await Prijava.findOne({ _id: req.params.id, studentId: req.uporabnik.id });
+  if (!prijava || !['ODDANA', 'POTRJENA', 'KONFLIKT', 'CAKALNA_VRSTA'].includes(prijava.status)) {
+    return res.status(400).json({ napaka: 'Prijave ni mogoče preklicati' });
+  }
+
+  const akcija = await Akcija.findById(prijava.akcijaId);
+  if (akcija.zacetek <= new Date()) {
+    return res.status(400).json({ napaka: 'Preklic je mogoč le pred začetkom akcije' });
+  }
+
+  const sprostiMesto = ['POTRJENA', 'KONFLIKT'].includes(prijava.status);
+  prijava.status = 'PREKLICANA';
+  await prijava.save();
+
+  if (sprostiMesto) {
+    await napredujCakalnoVrsto(akcija._id);
+  }
+
+  res.json({ sporocilo: 'Prijava preklicana' });
+});
+
+router.patch('/:id/udelezba', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) => {
+  const prijava = await Prijava.findById(req.params.id);
+  const akcija = prijava ? await Akcija.findById(prijava.akcijaId) : null;
+
+  if (!akcija || !(await jeOrganizatorAkcije(req.uporabnik.id, akcija))) {
+    return res.status(404).json({ napaka: 'Prijava ne obstaja' });
+  }
+  if (akcija.konec > new Date()) {
+    return res.status(400).json({ napaka: 'Udeležbo je mogoče označiti šele po koncu akcije' });
+  }
+  if (prijava.status !== 'POTRJENA') {
+    return res.status(400).json({ napaka: 'Udeležbo je mogoče označiti samo pri potrjeni prijavi' });
+  }
+
+  prijava.status = 'UDELEZEN';
+  prijava.ure = akcija.trajanjeUr();
+  await prijava.save();
+
+  akcija.status = 'ZAKLJUCENA';
+  await akcija.save();
+
+  res.json(prijava);
 });
 
 module.exports = router;
