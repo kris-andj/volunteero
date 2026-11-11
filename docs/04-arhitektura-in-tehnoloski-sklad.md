@@ -40,17 +40,17 @@ flowchart LR
 
 ```bash
 # backend
-cd streznik
+cd backend
 npm install
-npm run dev        # http://localhost:5000
+npm run dev        # http://localhost:5050
 
 # frontend (nov terminal)
-cd odjemalec
+cd frontend
 npm install
 npm run dev        # http://localhost:5173
 ```
 
-Pred zagonom mora biti lokalno nameščen in zagnan MongoDB. V datoteki `streznik/.env` sta nastavljena `MONGODB_URI` (npr. `mongodb://localhost:27017/volunteero`) in `JWT_SKRIVNOST`.
+Pred zagonom mora biti lokalno nameščen in zagnan MongoDB. V datoteki `backend/.env` sta nastavljena `MONGODB_URI` (npr. `mongodb://localhost:27017/volunteero`) in `JWT_SKRIVNOST`. Podrobna navodila so v `README.md`.
 
 ## 2. Tehnološki sklad
 
