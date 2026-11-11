@@ -14,6 +14,12 @@ router.get('/', async (req, res) => {
   res.json(akcije);
 });
 
+router.get('/moje', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) => {
+  const organizator = await Uporabnik.findById(req.uporabnik.id);
+  const akcije = await Akcija.find({ organizacijaId: organizator.organizacijaId }).sort({ zacetek: 1 });
+  res.json(akcije);
+});
+
 router.post('/', preveriZeton, zahtevajVlogo('ORGANIZATOR'), async (req, res) => {
   const organizator = await Uporabnik.findById(req.uporabnik.id);
   const organizacija = organizator ? await Organizacija.findById(organizator.organizacijaId) : null;
