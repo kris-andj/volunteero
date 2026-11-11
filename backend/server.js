@@ -11,7 +11,7 @@ app.use(express.json());
 app.use('/api', require('./routes/avtentikacija'));
 app.use('/api/skrbnik', require('./routes/skrbnik'));
 app.use('/api/akcije', require('./routes/akcije'));
-
+app.use('/api/prijave', require('./routes/prijave'));
 app.get('/api', (req, res) => {
   res.json({ sporocilo: 'Volunteero API deluje' });
 });
