@@ -20,7 +20,18 @@ async function poisciPrekrivanja(studentId, akcija) {
 router.get('/moje', preveriZeton, zahtevajVlogo('STUDENT'), async (req, res) => {
   const prijave = await Prijava.find({ studentId: req.uporabnik.id })
     .populate('akcijaId')
-    .sort({ oddanaDne: -1 });
+    .sort({ oddanaDne: -1 })
+    .lean();
+  for (const p of prijave) {
+    if (p.status === 'CAKALNA_VRSTA' && p.akcijaId) {
+      const pred = await Prijava.countDocuments({
+        akcijaId: p.akcijaId._id,
+        status: 'CAKALNA_VRSTA',
+        nastopVVrsto: { $lt: p.nastopVVrsto }
+      });
+      p.mestoVVrsti = pred + 1;
+    }
+  }
   res.json(prijave);
 });
 
