@@ -1,81 +1,140 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500&display=swap');
 
 :root {
-  --ozadje: #1c1c1c;
-  --povrsina: #262626;
-  --rob: #3a3a3a;
-  --besedilo: #e8e4dc;
-  --sivo: #9a958c;
-  --poudarek: #f2efe8;
-  --napaka: #d98c7a;
+  --ozadje: #1b1426;
+  --povrsina: rgba(255, 255, 255, 0.06);
+  --povrsina-mocna: rgba(255, 255, 255, 0.1);
+  --rob: rgba(255, 255, 255, 0.14);
+  --besedilo: #f5f0fa;
+  --sivo: #b9adc9;
+  --roza: #ff2d87;
+  --vijolicna: #a855f7;
+  --gradient: linear-gradient(90deg, #ff2d87, #a855f7);
+  --zelena: #34d399;
+  --rumena: #fbbf24;
+  --modra: #60a5fa;
+  --rdeca: #f87171;
 }
 
 * { box-sizing: border-box; margin: 0; }
 
 body {
-  background: var(--ozadje);
+  min-height: 100vh;
   color: var(--besedilo);
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
   line-height: 1.6;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(168, 85, 247, 0.28), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(255, 45, 135, 0.2), transparent 40%),
+    var(--ozadje);
+  background-attachment: fixed;
 }
 
-h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
-h1 { font-size: 3rem; letter-spacing: 0.04em; margin-bottom: 1.5rem; }
-h2 { font-size: 1.6rem; margin: 2rem 0 1rem; }
-h3 { font-size: 1.25rem; }
+h1, h2, h3 { font-family: 'Poppins', sans-serif; font-weight: 600; }
+h1 { font-size: 2.6rem; margin-bottom: 1.5rem; }
+h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; }
+h3 { font-size: 1.15rem; }
 
-.glava { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 3rem; border-bottom: 1px solid var(--rob); }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; letter-spacing: 0.08em; }
-nav { display: flex; gap: 1.5rem; align-items: center; }
-nav a { color: var(--sivo); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; }
-nav a:hover { color: var(--poudarek); }
+.glava {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 3rem;
+  background: rgba(27, 20, 38, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rob);
+}
+.logo {
+  font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.4rem; letter-spacing: 0.06em;
+  background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+nav { display: flex; gap: 1.25rem; align-items: center; }
+nav a { color: var(--sivo); text-decoration: none; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 999px; }
+nav a:hover { color: var(--besedilo); background: var(--povrsina-mocna); }
 
 main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
 
-.nadnaslov { color: var(--sivo); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.4rem; }
+.nadnaslov {
+  display: inline-block; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em;
+  background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-bottom: 0.3rem;
+}
 .uvod { margin-bottom: 3rem; }
-.uvod h1 { font-size: 4.5rem; }
-.uvod p { color: var(--sivo); max-width: 480px; }
+.uvod h1 { font-size: 3.6rem; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.uvod p { color: var(--sivo); max-width: 520px; font-size: 1.05rem; }
 
 .dva-stolpca { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
 .mreza { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
 
-.kartica { background: var(--povrsina); border: 1px solid var(--rob); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.9rem; color: inherit; text-align: left; font: inherit; }
-.kartica h2 { margin: 0 0 0.5rem; }
-.kartica.oznacena { border-color: var(--napaka); }
+.kartica {
+  background: var(--povrsina);
+  border: 1px solid var(--rob);
+  border-radius: 18px;
+  padding: 1.6rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+  color: inherit; text-align: left; font: inherit;
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.mreza .kartica:hover, .izbira-akcije:hover { transform: translateY(-3px); border-color: var(--vijolicna); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2); }
+.kartica h2 { margin: 0 0 0.3rem; }
+.kartica.oznacena { border-color: var(--rdeca); background: rgba(248, 113, 113, 0.08); }
 .izbira-akcije { cursor: pointer; width: 100%; margin-bottom: 1rem; }
-.izbira-akcije.izbrana { border-color: var(--poudarek); }
+.izbira-akcije.izbrana { border-color: var(--roza); box-shadow: 0 0 0 1px var(--roza); }
 
-label { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; font-size: 0.75rem; color: var(--sivo); text-transform: uppercase; letter-spacing: 0.1em; }
-input, textarea { background: transparent; border: none; border-bottom: 1px solid var(--rob); color: var(--besedilo); padding: 0.5rem 0; font: inherit; font-size: 1rem; }
-input:focus, textarea:focus { outline: none; border-bottom-color: var(--poudarek); }
-.izbira { display: flex; gap: 1.5rem; }
-.izbira label { flex-direction: row; align-items: center; flex: none; }
+label { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; font-size: 0.85rem; font-weight: 500; color: var(--sivo); }
+input, textarea {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--rob);
+  border-radius: 10px;
+  color: var(--besedilo);
+  padding: 0.7rem 0.9rem;
+  font: inherit; font-size: 0.95rem;
+}
+input:focus, textarea:focus { outline: none; border-color: var(--roza); box-shadow: 0 0 0 3px rgba(255, 45, 135, 0.25); }
+input[type='radio'] { accent-color: var(--roza); }
+.izbira { display: flex; gap: 0.75rem; }
+.izbira label { flex-direction: row; align-items: center; gap: 0.5rem; flex: none; padding: 0.5rem 1rem; border: 1px solid var(--rob); border-radius: 999px; color: var(--besedilo); cursor: pointer; }
 .vrstica { display: flex; gap: 1rem; }
 
-.gumb, .gumb-obroba, .gumb-mali { font: inherit; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.14em; padding: 0.75rem 1.5rem; cursor: pointer; border: 1px solid var(--poudarek); }
-.gumb { background: var(--poudarek); color: var(--ozadje); }
-.gumb-obroba { background: transparent; color: var(--poudarek); }
-.gumb-mali { background: transparent; color: var(--poudarek); padding: 0.4rem 0.8rem; margin-right: 0.5rem; }
-.gumb:disabled { opacity: 0.4; cursor: not-allowed; }
+.gumb, .gumb-obroba, .gumb-mali {
+  font: inherit; font-weight: 500; cursor: pointer; border-radius: 999px;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.gumb { background: var(--gradient); color: #fff; border: none; padding: 0.75rem 1.5rem; }
+.gumb:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(255, 45, 135, 0.35); transform: translateY(-1px); }
+.gumb-obroba { background: transparent; color: var(--besedilo); border: 1px solid var(--vijolicna); padding: 0.75rem 1.5rem; }
+.gumb-obroba:hover { background: rgba(168, 85, 247, 0.15); }
+.gumb-mali { background: var(--povrsina-mocna); color: var(--besedilo); border: 1px solid var(--rob); padding: 0.4rem 0.9rem; margin-right: 0.5rem; font-size: 0.85rem; }
+.gumb-mali:hover { border-color: var(--roza); }
+.gumb:disabled { background: var(--povrsina-mocna); color: var(--sivo); cursor: not-allowed; }
 
-.podatki { color: var(--sivo); font-size: 0.85rem; }
-.napaka { color: var(--napaka); font-size: 0.85rem; }
-.obvestilo { border-left: 2px solid var(--poudarek); padding-left: 1rem; margin-bottom: 1.5rem; }
+.podatki { color: var(--sivo); font-size: 0.9rem; }
+.napaka { color: var(--rdeca); font-size: 0.9rem; font-weight: 500; }
+.obvestilo { background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 1.5rem; }
 .iskanje { width: 100%; max-width: 360px; margin-bottom: 2rem; }
+
 .ure { flex-direction: row; justify-content: space-between; align-items: center; max-width: 360px; }
-.ure strong { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 400; }
-.vrstica-seznam { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--rob); }
+.ure strong { font-family: 'Poppins', sans-serif; font-size: 2.8rem; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.vrstica-seznam { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; margin-bottom: 0.6rem; background: var(--povrsina); border: 1px solid var(--rob); border-radius: 12px; }
 .prazno { color: var(--sivo); }
 
-.tabela { width: 100%; border-collapse: collapse; }
-.tabela th, .tabela td { text-align: left; padding: 0.8rem 0.5rem; border-bottom: 1px solid var(--rob); }
-.tabela th { color: var(--sivo); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400; }
+.tabela { width: 100%; border-collapse: collapse; background: var(--povrsina); border-radius: 14px; overflow: hidden; }
+.tabela th, .tabela td { text-align: left; padding: 0.9rem 1rem; border-bottom: 1px solid var(--rob); }
+.tabela th { color: var(--sivo); font-size: 0.8rem; font-weight: 500; background: rgba(255, 255, 255, 0.04); }
+.tabela tr:last-child td { border-bottom: none; }
+.tabela tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+
+.znacka { display: inline-block; padding: 0.2rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 500; border: 1px solid; }
+.znacka.POTRJENA, .znacka.UDELEZEN, .znacka.OBJAVLJENA { color: var(--zelena); border-color: var(--zelena); background: rgba(52, 211, 153, 0.12); }
+.znacka.CAKALNA_VRSTA { color: var(--rumena); border-color: var(--rumena); background: rgba(251, 191, 36, 0.12); }
+.znacka.ODDANA { color: var(--modra); border-color: var(--modra); background: rgba(96, 165, 250, 0.12); }
+.znacka.KONFLIKT, .znacka.ZAVRNJENA { color: var(--rdeca); border-color: var(--rdeca); background: rgba(248, 113, 113, 0.12); }
+.znacka.PREKLICANA, .znacka.ZAKLJUCENA { color: var(--sivo); border-color: var(--sivo); background: rgba(185, 173, 201, 0.12); }
 
 @media (max-width: 800px) {
   .dva-stolpca { grid-template-columns: 1fr; }
   .glava { padding: 1rem; }
   main { padding: 2rem 1rem; }
-  .uvod h1 { font-size: 3rem; }
+  .uvod h1 { font-size: 2.6rem; }
 }

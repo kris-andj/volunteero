@@ -1,5 +1,17 @@
 const API = 'http://localhost:5050/api';
 
+export const STATUSI = {
+  ODDANA: 'Oddana',
+  POTRJENA: 'Potrjena',
+  KONFLIKT: 'Konflikt',
+  CAKALNA_VRSTA: 'Čakalna vrsta',
+  ZAVRNJENA: 'Zavrnjena',
+  PREKLICANA: 'Preklicana',
+  UDELEZEN: 'Udeležen',
+  OBJAVLJENA: 'Objavljena',
+  ZAKLJUCENA: 'Zaključena'
+};
+
 export async function klic(pot, metoda = 'GET', telo) {
   const zeton = localStorage.getItem('zeton');
   const odgovor = await fetch(API + pot, {

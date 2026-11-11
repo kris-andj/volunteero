@@ -1,122 +1,68 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import Vpis from './pages/Vpis';
+import Akcije from './pages/Akcije';
+import Profil from './pages/Profil';
+import Organizator from './pages/Organizator';
+import Skrbnik from './pages/Skrbnik';
 
-function App() {
-  const [count, setCount] = useState(0)
+const ZACETNE_STRANI = { STUDENT: '/akcije', ORGANIZATOR: '/organizator', SKRBNIK: '/skrbnik' };
+
+export default function App() {
+  const [uporabnik, setUporabnik] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('uporabnik'));
+    } catch {
+      return null;
+    }
+  });
+
+  function prijava(podatki) {
+    const nov = { ime: podatki.ime, vloga: podatki.vloga };
+    localStorage.setItem('zeton', podatki.zeton);
+    localStorage.setItem('uporabnik', JSON.stringify(nov));
+    setUporabnik(nov);
+  }
+
+  function odjava() {
+    localStorage.removeItem('zeton');
+    localStorage.removeItem('uporabnik');
+    setUporabnik(null);
+  }
+
+  const domov = uporabnik ? ZACETNE_STRANI[uporabnik.vloga] : '/vpis';
+  const zaVlogo = (vloga, stran) => (uporabnik?.vloga === vloga ? stran : <Navigate to={domov} />);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <BrowserRouter>
+      <header className="glava">
+        <span className="logo">VOLUNTEERO</span>
+        {uporabnik && (
+          <nav>
+            {uporabnik.vloga === 'STUDENT' && (
+              <>
+                <Link to="/akcije">Akcije</Link>
+                <Link to="/profil">Profil</Link>
+              </>
+            )}
+            {uporabnik.vloga === 'ORGANIZATOR' && <Link to="/organizator">Moje akcije</Link>}
+            {uporabnik.vloga === 'SKRBNIK' && <Link to="/skrbnik">Potrditve</Link>}
+            <span className="podatki">{uporabnik.ime}</span>
+            <button className="gumb-mali" onClick={odjava}>Odjava</button>
+          </nav>
+        )}
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <main>
+        <Routes>
+          <Route path="/vpis" element={uporabnik ? <Navigate to={domov} /> : <Vpis onPrijava={prijava} />} />
+          <Route path="/akcije" element={zaVlogo('STUDENT', <Akcije />)} />
+          <Route path="/profil" element={zaVlogo('STUDENT', <Profil />)} />
+          <Route path="/organizator" element={zaVlogo('ORGANIZATOR', <Organizator />)} />
+          <Route path="/skrbnik" element={zaVlogo('SKRBNIK', <Skrbnik />)} />
+          <Route path="*" element={<Navigate to={domov} />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
+  );
 }
-
-export default App
